@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+//Sample Schama for prodiucts as no requirement were given for it.
+model Products {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  price       Decimal
+  description String?
+  overrides   PriceOverrides[]
+}
+
+model PriceOverrides {
+  id             Int      @id @default(autoincrement())
+  override_price Decimal
+  valid_from     DateTime
+  valid_to       DateTime
+  item_id        Int      
+  product        Products @relation(fields: [item_id], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
